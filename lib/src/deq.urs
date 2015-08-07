@@ -11,3 +11,7 @@ val viewR: a ::: Type -> deq a -> option (deq a * a)
 
 val filter: a ::: Type -> (a -> bool) -> deq a -> deq a
 val mp: a ::: Type -> b ::: Type -> (a -> b) -> deq a -> deq b
+
+val propConsViewL: a ::: Type -> eq a -> a -> deq a -> bool 
+val propSnocViewR: a ::: Type -> eq a -> a -> deq a -> bool
+

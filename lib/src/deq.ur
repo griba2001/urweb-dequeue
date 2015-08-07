@@ -63,7 +63,7 @@ val show_deq[a](_:show a): show (deq a) = let fun show' (d1: deq a) = show (toLi
 
 fun propConsViewL[a] (_:eq a) (x: a) (d1: deq a): bool = viewL (cons x d1) = Some (x, d1)
 
-fun propConsViewR[a] (_:eq a) (x: a) (d1: deq a): bool = viewR (snoc x d1) = Some (d1, x)
+fun propSnocViewR[a] (_:eq a) (x: a) (d1: deq a): bool = viewR (snoc x d1) = Some (d1, x)
 
 (* ops *)
 
