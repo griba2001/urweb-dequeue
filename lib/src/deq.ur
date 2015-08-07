@@ -67,7 +67,38 @@ fun propSnocViewR[a] (_:eq a) (x: a) (d1: deq a): bool = viewR (snoc x d1) = Som
 
 (* ops *)
 
-val filter[a]: (a -> bool) -> deq a -> deq a = fn prop (Deq (l, r)) => Deq (L.filter prop l, L.filter prop r)
+val filter[a]: (a -> bool) -> deq a -> deq a = fn prop (Deq (l, r)) =>
 
-val mp[a][b]: (a -> b) -> deq a -> deq b = fn f (Deq (l, r)) => Deq (L.mp f l, L.mp f r)
+     Deq (L.filter prop l, L.filter prop r)
 
+val mp[a][b]: (a -> b) -> deq a -> deq b = fn f (Deq (l, r)) =>
+
+     Deq (L.mp f l, L.mp f r)
+
+val mapPartial[a][b]: (a -> option b) -> deq a -> deq b = fn f (Deq (l, r)) =>
+
+     Deq (L.mapPartial f l, L.mapPartial f r)
+
+val foldl[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
+
+     let
+        val acc = L.foldl binop z l
+     in
+        L.foldl binop acc (L.rev r)
+     end
+
+val foldr[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
+
+     let
+        val acc = L.foldl binop z r
+     in
+        L.foldr binop acc l 
+     end
+
+val foldl[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
+
+     let
+        val acc = L.foldl binop z l
+     in
+        L.foldl binop acc (L.rev r)
+     end
