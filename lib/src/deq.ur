@@ -1,10 +1,13 @@
 (* splitted list dequeue *)
+
 structure L = List
 structure O = Option  (* import option eq instance *)
 
 datatype deq a = Deq of (list a * list a)
 
+(*
 fun mapPair[a][b][c] (f: b -> c) (p: a * b) = (p.1, f p.2)
+*)
 
 fun fromList[a]: list a -> deq a = fn li =>
      case li of
@@ -40,7 +43,7 @@ fun viewR[a]: deq a -> option (deq a * a) = fn (Deq (l, r)) =>
                | Some (ys, y) => Some (fromList ys, y)
                )
 
-(* classes *)
+(* class instances *)
 
 val eq_pair[a][b] (_:eq a) (_:eq b): eq (a * b) =
    let fun eq' (p: a * b) (q: a * b) = p.1 = q.1 && p.2 = q.2
