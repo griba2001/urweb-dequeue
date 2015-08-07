@@ -102,3 +102,19 @@ val foldl[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
      in
         L.foldl binop acc (L.rev r)
      end
+
+val foldlPartial[a][b]: (a -> b -> option b) -> b -> deq a -> b = fn partialBinop z (Deq (l, r)) =>
+
+     let
+         fun list_foldlPartial (f: a -> b -> option b) (z: b) (li: list a) =
+              let fun f' (x: a) (acc: b): b =
+                     case f x acc of
+                       None => acc
+                       | Some res => res
+              in
+                 L.foldl f' z li
+              end
+         val acc = list_foldlPartial partialBinop z l
+      in
+          list_foldlPartial partialBinop acc (L.rev r)
+      end
