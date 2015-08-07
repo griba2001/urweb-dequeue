@@ -21,16 +21,20 @@ val toList[a]: deq a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 fun cons[a]: a -> deq a -> deq a = fn x (Deq (l, r)) => Deq (x :: l, r)
 fun snoc[a]: a -> deq a -> deq a = fn x (Deq (l, r)) => Deq (l, x :: r)
 
-fun splitLast[a] (acc: list a) (li: list a): option (list a * a) =
-     case li of
-        [] => None
+fun listSplitLast[a] (li: list a): option (list a * a) =
+    let splitLast' [] li
+    where
+      fun splitLast' (acc: list a) (li: list a) =
+      case li of
+        | [] => None
         | x :: [] => Some (L.rev acc, x)
-        | x :: rest => splitLast (x :: acc) rest
+        | x :: rest => splitLast' (x :: acc) rest
+    end
 
 fun viewL[a]: deq a -> option (a * deq a) = fn (Deq (l, r)) =>
    case l of
       | x :: xs => Some (x, Deq (xs, r))
-      | [] => (case splitLast [] r of
+      | [] => (case listSplitLast r of
                | None => None
                | Some (ys, y) => Some (y, fromList (L.rev ys))
                )
@@ -38,7 +42,7 @@ fun viewL[a]: deq a -> option (a * deq a) = fn (Deq (l, r)) =>
 fun viewR[a]: deq a -> option (deq a * a) = fn (Deq (l, r)) =>
     case r of
       | x :: xs => Some (Deq (l, xs), x)
-      | [] => (case splitLast [] l of
+      | [] => (case listSplitLast l of
                | None => None
                | Some (ys, y) => Some (fromList ys, y)
                )
