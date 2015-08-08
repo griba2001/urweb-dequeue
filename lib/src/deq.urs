@@ -27,6 +27,7 @@ val nth: a ::: Type -> t a -> int -> option a
 
 val take: a ::: Type -> int -> t a -> t a
 val drop: a ::: Type -> int -> t a -> t a
+val splitAt: a ::: Type -> int -> t a -> t a * t a
 
 (* map/filter/fold ops *)
 

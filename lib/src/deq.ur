@@ -119,6 +119,12 @@ fun drop[a] (n: int) (d1:t a): t a =
        else fromList <| L.drop (n - len_l) <| L.rev r
      end
 
+fun splitAt[a] (n: int) (d1: t a): t a * t a =
+    let val (prefix, suffix) = L.splitAt n <| toList d1
+    in
+        (fromList prefix, fromList suffix)
+    end
+
 (* map/filter/fold ops *)
 
 val mp[a][b]: (a -> b) -> t a -> t b = fn f (Deq (l, r)) =>
