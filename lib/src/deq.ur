@@ -43,14 +43,9 @@ fun viewR[a]: t a -> option (t a * a) = fn (Deq (l, r)) =>
                | Some (ys, y) => Some (fromList ys, y)
                )
 
+(* monoid ops *)
+
 val empty[a]: t a = Deq ([], [])
-
-val null[a]: t a -> bool = fn (Deq (l, r)) =>
-    case (l, r) of
-      ([], []) => True
-      | _ => False
-
-val size[a]: t a -> int = fn (Deq (l, r)) => L.length l + L.length r
 
 fun append[a]: t a -> t a -> t a = fn (Deq (l1, r1)) (Deq (l2, r2)) =>
    let
@@ -58,6 +53,15 @@ fun append[a]: t a -> t a -> t a = fn (Deq (l1, r1)) (Deq (l2, r2)) =>
    where
      val prefix = l1 `L.append` L.revAppend r1 l2
    end
+
+(* query ops *)
+
+val null[a]: t a -> bool = fn (Deq (l, r)) =>
+    case (l, r) of
+      ([], []) => True
+      | _ => False
+
+val size[a]: t a -> int = fn (Deq (l, r)) => L.length l + L.length r
 
 fun member [a] (_ : eq a) (x: a): t a -> bool = fn (Deq (l, r)) => L.mem x l || L.mem x r
 
@@ -82,11 +86,7 @@ val show_deq[a](_:show a): show (t a) = let fun show' (d1: t a) = show (toList d
                                           end       
                                 
 
-(* ops *)
-
-val filter[a]: (a -> bool) -> t a -> t a = fn prop (Deq (l, r)) =>
-
-     Deq (L.filter prop l, L.filter prop r)
+(* map/filter/fold ops *)
 
 val mp[a][b]: (a -> b) -> t a -> t b = fn f (Deq (l, r)) =>
 
@@ -95,6 +95,10 @@ val mp[a][b]: (a -> b) -> t a -> t b = fn f (Deq (l, r)) =>
 val mapPartial[a][b]: (a -> option b) -> t a -> t b = fn f (Deq (l, r)) =>
 
      Deq (L.mapPartial f l, L.mapPartial f r)
+
+val filter[a]: (a -> bool) -> t a -> t a = fn prop (Deq (l, r)) =>
+
+     Deq (L.filter prop l, L.filter prop r)
 
 val foldl[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
      let
@@ -118,6 +122,13 @@ fun withPartialBinop[a][b] (f: a -> b -> option b) (x: a) (acc: b): b =
       None => acc
       | Some res => res
 
+(* fun withFilterAndBinop
+   converts filter and binop to binop *)
+fun withFilterAndBinop[a][b] (prop: a -> bool) (f: a -> b -> b) (x: a) (acc: b): b =
+     if prop x
+        then f x acc
+        else acc 
+
 val foldlPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop z deq =>
 
       foldl (withPartialBinop partialBinop) z deq
@@ -125,6 +136,14 @@ val foldlPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop 
 val foldrPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop z deq =>
 
       foldr (withPartialBinop partialBinop) z deq
+
+val filterFoldl[a][b]: (a -> bool) -> (a -> b -> b) -> b -> t a -> b = fn prop binop =>
+
+    foldl (withFilterAndBinop prop binop)
+
+val filterFoldr[a][b]: (a -> bool) -> (a -> b -> b) -> b -> t a -> b = fn prop binop =>
+
+    foldr (withFilterAndBinop prop binop)
 
 val foldlAccum[a][b][c]: (a -> b -> c * b) -> b -> t a -> t c * b = fn stateOp ini (Deq (l, r)) =>
      let
@@ -139,6 +158,12 @@ fun sum[a] (_:num a): t a -> a = fn (Deq (l, r)) =>
    where
      fun list_sum (li: list a) = L.foldl plus zero li
    end
+
+val float_prod: t float -> float = fn (Deq (l, r)) =>
+   let list_prod l * list_prod r
+   where
+     fun list_prod (li: list float) = L.foldl times 1.0 li 
+   end 
 
 (* invariants *)
 
