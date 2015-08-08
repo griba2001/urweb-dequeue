@@ -88,7 +88,7 @@ val foldr[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
      end
 
 (* fun withPartialBinop:
-   converts foldings partial function (a -> b -> option b) to (a -> b -> b) *)
+   converts partial foldings' function (a -> b -> option b) to (a -> b -> b) *)
 
 fun withPartialBinop[a][b] (f: a -> b -> option b) (x: a) (acc: b): b =
     case f x acc of
@@ -110,6 +110,12 @@ val foldlAccum[a][b][c]: (a -> b -> c * b) -> b -> t a -> t c * b = fn stateOp i
      in
          (Deq (list_lRes, L.rev list_rRes), st)
      end
+
+fun sum[a] (_:num a): t a -> a = fn (Deq (l, r)) =>
+   let list_sum l + list_sum r
+   where
+     fun list_sum (li: list a) = L.foldl plus zero li
+   end
 
 (* invariants *)
 

@@ -21,6 +21,8 @@ val foldrPartial: a ::: Type -> b ::: Type -> (a -> b -> option b) -> b -> t a -
 
 val foldlAccum: a ::: Type -> b ::: Type -> c ::: Type -> (a -> b -> c * b) -> b -> t a -> t c * b
 
+val sum: a ::: Type -> num a -> t a -> a
+
 val propConsViewL: a ::: Type -> eq a -> a -> t a -> bool
 val propSnocViewR: a ::: Type -> eq a -> a -> t a -> bool
 
