@@ -59,12 +59,6 @@ val show_deq[a](_:show a): show (t a) = let fun show' (d1: t a) = show (toList d
                                           end       
                                 
 
-(* invariants *)
-
-fun propConsViewL[a] (_:eq a) (x: a) (d1: t a): bool = viewL (cons x d1) = Some (x, d1)
-
-fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some (d1, x)
-
 (* ops *)
 
 val filter[a]: (a -> bool) -> t a -> t a = fn prop (Deq (l, r)) =>
@@ -116,3 +110,9 @@ val foldlAccum[a][b][c]: (a -> b -> c * b) -> b -> t a -> t c * b = fn stateOp i
      in
          (Deq (list_lRes, L.rev list_rRes), st)
      end
+
+(* invariants *)
+
+fun propConsViewL[a] (_:eq a) (x: a) (d1: t a): bool = viewL (cons x d1) = Some (x, d1)
+
+fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some (d1, x)
