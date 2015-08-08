@@ -196,10 +196,13 @@ fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some 
 
 fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
 
-fun range (from: int) (n: int): list int =
-   let range' [] 0
+fun range (from: int) (n: int): list int = (* n > 0 *)
+   let range' [] n
    where
-     fun range' (acc: list int) (i: int) = if i = n then acc else range' ((from + i) :: acc) (i + 1)
+     fun range' (acc: list int) (i: int) =
+           if i = 0
+             then acc
+             else range' ((from + i - 1) :: acc) (i - 1)
    end
 
 fun propNthSameElements[a] (_:eq a) (d1: t a): bool =
