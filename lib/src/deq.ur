@@ -59,6 +59,13 @@ fun append[a]: t a -> t a -> t a = fn (Deq (l1, r1)) (Deq (l2, r2)) =>
      val prefix = l1 `L.append` L.revAppend r1 l2
    end
 
+fun member [a] (_ : eq a) (x: a): t a -> bool = fn (Deq (l, r)) => L.mem x l || L.mem x r
+
+fun find[a] (prop: a -> bool): t a -> option a = fn (Deq (l, r)) =>
+    case L.find prop l of
+      Some x => Some x
+      | None => L.find prop r
+
 (* class instances *)
 
 val eq_pair[a][b] (_:eq a) (_:eq b): eq (a * b) =

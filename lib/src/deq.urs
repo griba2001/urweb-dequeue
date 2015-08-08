@@ -14,6 +14,9 @@ val null: a ::: Type -> t a -> bool
 val size: a ::: Type -> t a -> int
 val append: a ::: Type -> t a -> t a -> t a
 
+val member: a ::: Type -> eq a -> a -> t a -> bool
+val find: a ::: Type -> (a -> bool) -> t a -> option a
+
 val filter: a ::: Type -> (a -> bool) -> t a -> t a
 val mp: a ::: Type -> b ::: Type -> (a -> b) -> t a -> t b
 val mapPartial: a ::: Type -> b ::: Type -> (a -> option b) -> t a -> t b
