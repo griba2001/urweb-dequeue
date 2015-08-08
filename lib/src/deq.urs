@@ -21,7 +21,7 @@ val null: a ::: Type -> t a -> bool
 val size: a ::: Type -> t a -> int
 val member: a ::: Type -> eq a -> a -> t a -> bool
 val find: a ::: Type -> (a -> bool) -> t a -> option a
-
+val nth: a ::: Type -> t a -> int -> option a
 (* map/filter/fold ops *)
 
 val mp: a ::: Type -> b ::: Type -> (a -> b) -> t a -> t b

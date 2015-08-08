@@ -63,7 +63,19 @@ val null[a]: t a -> bool = fn (Deq (l, r)) =>
 
 val size[a]: t a -> int = fn (Deq (l, r)) => L.length l + L.length r
 
-fun member [a] (_ : eq a) (x: a): t a -> bool = fn (Deq (l, r)) => L.mem x l || L.mem x r
+fun member[a] (_ : eq a) (x: a): t a -> bool = fn (Deq (l, r)) => L.mem x l || L.mem x r
+
+fun nth[a]: t a -> int -> option a = fn (Deq (l, r)) i =>
+    if i < 0 then None else
+    let val len_l = L.length l
+    in if i < len_l
+            then L.nth l i
+            else let L.nth r rev_sufix_idx
+                 where
+                    val sufix_idx = (i - len_l)
+                    val rev_sufix_idx = L.length r -1 - sufix_idx
+                 end
+    end
 
 fun find[a] (prop: a -> bool): t a -> option a = fn (Deq (l, r)) =>
     case L.find prop l of
