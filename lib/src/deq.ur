@@ -93,7 +93,8 @@ val foldr[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
         L.foldr binop acc l 
      end
 
-(* convert function (a -> b -> option b) to (a -> b -> b) *)
+(* fun withPartialBinop:
+   converts foldings partial function (a -> b -> option b) to (a -> b -> b) *)
 
 fun withPartialBinop[a][b] (f: a -> b -> option b) (x: a) (acc: b): b =
     case f x acc of
