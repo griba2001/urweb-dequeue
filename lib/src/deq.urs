@@ -17,6 +17,9 @@ val foldl: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> t a -> b
 val foldr: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> t a -> b
 
 val foldlPartial: a ::: Type -> b ::: Type -> (a -> b -> option b) -> b -> t a -> b
+val foldrPartial: a ::: Type -> b ::: Type -> (a -> b -> option b) -> b -> t a -> b
+
+val foldlAccum: a ::: Type -> b ::: Type -> c ::: Type -> (a -> b -> c * b) -> b -> t a -> t c * b
 
 val propConsViewL: a ::: Type -> eq a -> a -> t a -> bool
 val propSnocViewR: a ::: Type -> eq a -> a -> t a -> bool

@@ -107,3 +107,11 @@ val foldlPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop 
 val foldrPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop z deq =>
 
       foldr (withPartialBinop partialBinop) z deq
+
+val foldlAccum[a][b][c]: (a -> b -> c * b) -> b -> t a -> t c * b = fn stateOp ini (Deq (l, r)) =>
+     let
+         val (list_lRes, st) = L.foldlMap stateOp ini l
+         val (list_rRes, st) = L.foldlMap stateOp st (L.rev r)
+     in
+         (Deq (list_lRes, L.rev list_rRes), st)
+     end
