@@ -3,23 +3,19 @@
 structure L = List
 structure O = Option  (* import option eq instance *)
 
-datatype deq a = Deq of (list a * list a)
+datatype t a = Deq of (list a * list a)
 
-(*
-fun mapPair[a][b][c] (f: b -> c) (p: a * b) = (p.1, f p.2)
-*)
+fun cons[a]: a -> t a -> t a = fn x (Deq (l, r)) => Deq (x :: l, r)
+fun snoc[a]: a -> t a -> t a = fn x (Deq (l, r)) => Deq (l, x :: r)
 
-fun fromList[a]: list a -> deq a = fn li =>
+fun fromList[a]: list a -> t a = fn li =>
      case li of
          [] => Deq ([], [])
          | _ => let val (prefix, sufix) = L.splitAt (L.length li `divide` 2) li
                 in Deq (prefix, L.rev sufix)
                 end   
 
-val toList[a]: deq a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
-
-fun cons[a]: a -> deq a -> deq a = fn x (Deq (l, r)) => Deq (x :: l, r)
-fun snoc[a]: a -> deq a -> deq a = fn x (Deq (l, r)) => Deq (l, x :: r)
+val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 
 fun listSplitLast[a] (li: list a): option (list a * a) =
     let splitLast' [] li
@@ -31,7 +27,7 @@ fun listSplitLast[a] (li: list a): option (list a * a) =
         | x :: rest => splitLast' (x :: acc) rest
     end
 
-fun viewL[a]: deq a -> option (a * deq a) = fn (Deq (l, r)) =>
+fun viewL[a]: t a -> option (a * t a) = fn (Deq (l, r)) =>
    case l of
       | x :: xs => Some (x, Deq (xs, r))
       | [] => (case listSplitLast r of
@@ -39,7 +35,7 @@ fun viewL[a]: deq a -> option (a * deq a) = fn (Deq (l, r)) =>
                | Some (ys, y) => Some (y, fromList (L.rev ys))
                )
 
-fun viewR[a]: deq a -> option (deq a * a) = fn (Deq (l, r)) =>
+fun viewR[a]: t a -> option (t a * a) = fn (Deq (l, r)) =>
     case r of
       | x :: xs => Some (Deq (l, xs), x)
       | [] => (case listSplitLast l of
@@ -54,71 +50,60 @@ val eq_pair[a][b] (_:eq a) (_:eq b): eq (a * b) =
    in mkEq eq'
    end
 
-val eq_deq[a] (_:eq a): eq (deq a) = let fun eq' (d1: deq a) (d2: deq a) = toList d1 = toList d2
+val eq_deq[a] (_:eq a): eq (t a) = let fun eq' (d1: t a) (d2: t a) = toList d1 = toList d2
                             in mkEq eq'
                             end
 
-val show_deq[a](_:show a): show (deq a) = let fun show' (d1: deq a) = show (toList d1)
+val show_deq[a](_:show a): show (t a) = let fun show' (d1: t a) = show (toList d1)
                                           in mkShow show'
                                           end       
                                 
 
 (* invariants *)
 
-fun propConsViewL[a] (_:eq a) (x: a) (d1: deq a): bool = viewL (cons x d1) = Some (x, d1)
+fun propConsViewL[a] (_:eq a) (x: a) (d1: t a): bool = viewL (cons x d1) = Some (x, d1)
 
-fun propSnocViewR[a] (_:eq a) (x: a) (d1: deq a): bool = viewR (snoc x d1) = Some (d1, x)
+fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some (d1, x)
 
 (* ops *)
 
-val filter[a]: (a -> bool) -> deq a -> deq a = fn prop (Deq (l, r)) =>
+val filter[a]: (a -> bool) -> t a -> t a = fn prop (Deq (l, r)) =>
 
      Deq (L.filter prop l, L.filter prop r)
 
-val mp[a][b]: (a -> b) -> deq a -> deq b = fn f (Deq (l, r)) =>
+val mp[a][b]: (a -> b) -> t a -> t b = fn f (Deq (l, r)) =>
 
      Deq (L.mp f l, L.mp f r)
 
-val mapPartial[a][b]: (a -> option b) -> deq a -> deq b = fn f (Deq (l, r)) =>
+val mapPartial[a][b]: (a -> option b) -> t a -> t b = fn f (Deq (l, r)) =>
 
      Deq (L.mapPartial f l, L.mapPartial f r)
 
-val foldl[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
-
+val foldl[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
      let
         val acc = L.foldl binop z l
      in
         L.foldl binop acc (L.rev r)
      end
 
-val foldr[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
-
+val foldr[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
      let
         val acc = L.foldl binop z r
      in
         L.foldr binop acc l 
      end
 
-val foldl[a][b]: (a -> b -> b) -> b -> deq a -> b = fn binop z (Deq (l, r)) =>
+(* convert function (a -> b -> option b) to (a -> b -> b) *)
 
-     let
-        val acc = L.foldl binop z l
-     in
-        L.foldl binop acc (L.rev r)
-     end
+fun withPartialBinop[a][b] (f: a -> b -> option b) (x: a) (acc: b): b =
+    case f x acc of
+      None => acc
+      | Some res => res
 
-val foldlPartial[a][b]: (a -> b -> option b) -> b -> deq a -> b = fn partialBinop z (Deq (l, r)) =>
+val foldlPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop z deq =>
 
-     let
-         fun list_foldlPartial (f: a -> b -> option b) (z: b) (li: list a) =
-              let fun f' (x: a) (acc: b): b =
-                     case f x acc of
-                       None => acc
-                       | Some res => res
-              in
-                 L.foldl f' z li
-              end
-         val acc = list_foldlPartial partialBinop z l
-      in
-          list_foldlPartial partialBinop acc (L.rev r)
-      end
+      foldl (withPartialBinop partialBinop) z deq
+
+val foldrPartial[a][b]: (a -> b -> option b) -> b -> t a -> b = fn partialBinop z deq =>
+
+      foldr (withPartialBinop partialBinop) z deq

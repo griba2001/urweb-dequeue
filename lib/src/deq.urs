@@ -1,23 +1,23 @@
-con deq :: Type -> Type
+con t :: Type -> Type
 
-val fromList: a ::: Type -> list a -> deq a
-val toList: a ::: Type -> deq a -> list a
+val fromList: a ::: Type -> list a -> t a
+val toList: a ::: Type -> t a -> list a
 
-val cons:  a ::: Type -> a -> deq a -> deq a
-val snoc:  a ::: Type -> a -> deq a -> deq a
+val cons:  a ::: Type -> a -> t a -> t a
+val snoc:  a ::: Type -> a -> t a -> t a
 
-val viewL: a ::: Type -> deq a -> option (a * deq a)
-val viewR: a ::: Type -> deq a -> option (deq a * a)
+val viewL: a ::: Type -> t a -> option (a * t a)
+val viewR: a ::: Type -> t a -> option (t a * a)
 
-val filter: a ::: Type -> (a -> bool) -> deq a -> deq a
-val mp: a ::: Type -> b ::: Type -> (a -> b) -> deq a -> deq b
-val mapPartial: a ::: Type -> b ::: Type -> (a -> option b) -> deq a -> deq b
+val filter: a ::: Type -> (a -> bool) -> t a -> t a
+val mp: a ::: Type -> b ::: Type -> (a -> b) -> t a -> t b
+val mapPartial: a ::: Type -> b ::: Type -> (a -> option b) -> t a -> t b
 
-val foldl: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> deq a -> b
-val foldr: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> deq a -> b
+val foldl: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> t a -> b
+val foldr: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> t a -> b
 
-val foldlPartial: a ::: Type -> b ::: Type -> (a -> b -> option b) -> b -> deq a -> b
+val foldlPartial: a ::: Type -> b ::: Type -> (a -> b -> option b) -> b -> t a -> b
 
-val propConsViewL: a ::: Type -> eq a -> a -> deq a -> bool 
-val propSnocViewR: a ::: Type -> eq a -> a -> deq a -> bool
+val propConsViewL: a ::: Type -> eq a -> a -> t a -> bool
+val propSnocViewR: a ::: Type -> eq a -> a -> t a -> bool
 
