@@ -22,9 +22,9 @@ fun listSplitLast[a] (li: list a): option (list a * a) =
     where
       fun splitLast' (acc: list a) (li: list a) =
       case li of
-        | [] => None
         | x :: [] => Some (L.rev acc, x)
         | x :: rest => splitLast' (x :: acc) rest
+        | [] => None
     end
 
 fun viewL[a]: t a -> option (a * t a) = fn (Deq (l, r)) =>
