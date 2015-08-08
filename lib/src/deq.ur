@@ -156,13 +156,13 @@ val foldlAccum[a][b][c]: (a -> b -> c * b) -> b -> t a -> t c * b = fn stateOp i
 fun sum[a] (_:num a): t a -> a = fn (Deq (l, r)) =>
    let list_sum l + list_sum r
    where
-     fun list_sum (li: list a) = L.foldl plus zero li
+     val list_sum: list a -> a = L.foldl plus zero
    end
 
 val float_prod: t float -> float = fn (Deq (l, r)) =>
    let list_prod l * list_prod r
    where
-     fun list_prod (li: list float) = L.foldl times 1.0 li 
+     val list_prod: list float -> float = L.foldl times 1.0
    end 
 
 (* invariants *)
