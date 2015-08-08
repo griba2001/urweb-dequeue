@@ -17,6 +17,11 @@ fun fromList[a]: list a -> t a = fn li =>
 
 val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 
+(* internal listSplitLast
+   @param li 
+   @return None | Some (init li, last li)
+ *)
+
 fun listSplitLast[a] (li: list a): option (list a * a) =
     let splitLast' [] li
     where
