@@ -9,6 +9,11 @@ val snoc:  a ::: Type -> a -> t a -> t a
 val viewL: a ::: Type -> t a -> option (a * t a)
 val viewR: a ::: Type -> t a -> option (t a * a)
 
+val empty: a ::: Type -> t a
+val null: a ::: Type -> t a -> bool
+val size: a ::: Type -> t a -> int
+val append: a ::: Type -> t a -> t a -> t a
+
 val filter: a ::: Type -> (a -> bool) -> t a -> t a
 val mp: a ::: Type -> b ::: Type -> (a -> b) -> t a -> t b
 val mapPartial: a ::: Type -> b ::: Type -> (a -> option b) -> t a -> t b

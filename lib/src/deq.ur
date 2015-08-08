@@ -43,6 +43,22 @@ fun viewR[a]: t a -> option (t a * a) = fn (Deq (l, r)) =>
                | Some (ys, y) => Some (fromList ys, y)
                )
 
+val empty[a]: t a = Deq ([], [])
+
+val null[a]: t a -> bool = fn (Deq (l, r)) =>
+    case (l, r) of
+      ([], []) => True
+      | _ => False
+
+val size[a]: t a -> int = fn (Deq (l, r)) => L.length l + L.length r
+
+fun append[a]: t a -> t a -> t a = fn (Deq (l1, r1)) (Deq (l2, r2)) =>
+   let
+     Deq (prefix, r2)
+   where
+     val prefix = l1 `L.append` L.revAppend r1 l2
+   end
+
 (* class instances *)
 
 val eq_pair[a][b] (_:eq a) (_:eq b): eq (a * b) =
