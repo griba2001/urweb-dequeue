@@ -165,6 +165,8 @@ val foldlAccum[a][b][c]: (a -> b -> c * b) -> b -> t a -> t c * b = fn stateOp i
          (Deq (list_lRes, L.rev list_rRes), st)
      end
 
+(* specific folds *)
+
 fun sum[a] (_:num a): t a -> a = fn (Deq (l, r)) =>
    let list_sum l + list_sum r
    where
@@ -175,7 +177,11 @@ val float_prod: t float -> float = fn (Deq (l, r)) =>
    let list_prod l * list_prod r
    where
      val list_prod: list float -> float = L.foldl times 1.0
-   end 
+   end
+
+val all[a]: (a -> bool) -> t a -> bool = fn prop (Deq (l, r)) => L.all prop l && L.all prop r
+
+val any[a]: (a -> bool) -> t a -> bool = fn prop (Deq (l, r)) => L.exists prop l || L.exists prop r
 
 (* invariants *)
 

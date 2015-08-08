@@ -42,8 +42,12 @@ val filterFoldr: a ::: Type -> b ::: Type -> (a -> bool) -> (a -> b -> b) -> b -
 val foldlAccum: a ::: Type -> b ::: Type -> c ::: Type -> (a -> b -> c * b) -> b -> t a -> t c * b
 
 (* specific folds *)
+
 val sum: a ::: Type -> num a -> t a -> a
 val float_prod: t float -> float
+
+val all: a ::: Type -> (a -> bool) -> t a -> bool
+val any: a ::: Type -> (a -> bool) -> t a -> bool
 
 (* invariants *)
 val propConsViewL: a ::: Type -> eq a -> a -> t a -> bool
