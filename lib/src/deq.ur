@@ -6,7 +6,7 @@ structure O = Option  (* import option eq instance *)
 datatype t a = Deq of (list a * list a)
 
 fun cons[a]: a -> t a -> t a = fn x (Deq (l, r)) => Deq (x :: l, r)
-fun snoc[a]: a -> t a -> t a = fn x (Deq (l, r)) => Deq (l, x :: r)
+fun snoc[a]: t a -> a -> t a = fn (Deq (l, r)) x => Deq (l, x :: r)
 
 fun fromList[a]: list a -> t a = fn li =>
      case li of
@@ -196,7 +196,8 @@ fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some 
 
 fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
 
-fun range (from: int) (n: int): list int = (* n > 0 *)
+(* internal rangeList *)
+fun rangeList (from: int) (n: int): list int = (* n >= 0 *)
    let range' [] n
    where
      fun range' (acc: list int) (i: int) =
@@ -207,7 +208,7 @@ fun range (from: int) (n: int): list int = (* n > 0 *)
 
 fun propNthSameElements[a] (_:eq a) (d1: t a): bool =
    let val li = toList d1
-       val idxs = range 0 (size d1)
+       val idxs = rangeList 0 (size d1)
        val deqItems = L.mp (nth d1) idxs
        val listItems = L.mp (L.nth li) idxs 
    in

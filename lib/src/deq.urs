@@ -2,7 +2,7 @@ con t :: Type -> Type
 
 (* construct *)
 val cons:  a ::: Type -> a -> t a -> t a
-val snoc:  a ::: Type -> a -> t a -> t a
+val snoc:  a ::: Type -> t a -> a -> t a
 
 (* deconstruct *)
 val viewL: a ::: Type -> t a -> option (a * t a)

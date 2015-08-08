@@ -7,7 +7,7 @@ datatype t a = Deq of (list a * list a)
 
 (* construct *)
 fun cons[a]: a -> t a -> t a = fn x (Deq (l, r)) => Deq (x :: l, r)
-fun snoc[a]: a -> t a -> t a = fn x (Deq (l, r)) => Deq (l, x :: r)
+fun snoc[a]: t a -> a -> t a = fn (Deq (l, r)) x => Deq (l, x :: r)
 
 (* deconstruct *)
 fun viewL[a]: t a -> option (a * t a) = ...
