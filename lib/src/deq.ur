@@ -193,3 +193,20 @@ val any[a]: (a -> bool) -> t a -> bool = fn prop (Deq (l, r)) => L.exists prop l
 fun propConsViewL[a] (_:eq a) (x: a) (d1: t a): bool = viewL (cons x d1) = Some (x, d1)
 
 fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some (d1, x)
+
+fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
+
+fun range (from: int) (n: int): list int =
+   let range' [] 0
+   where
+     fun range' (acc: list int) (i: int) = if i = n then acc else range' ((from + i) :: acc) (i + 1)
+   end
+
+fun propNthSameElements[a] (_:eq a) (d1: t a): bool =
+   let val li = toList d1
+       val idxs = range 0 (size d1)
+       val deqItems = L.mp (nth d1) idxs
+       val listItems = L.mp (L.nth li) idxs 
+   in
+      deqItems = listItems
+   end

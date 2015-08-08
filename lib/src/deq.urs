@@ -53,3 +53,6 @@ val any: a ::: Type -> (a -> bool) -> t a -> bool
 val propConsViewL: a ::: Type -> eq a -> a -> t a -> bool
 val propSnocViewR: a ::: Type -> eq a -> a -> t a -> bool
 
+val propFromToList: a ::: Type -> eq a -> list a -> bool
+val propNthSameElements: a ::: Type -> eq a -> t a -> bool
+
