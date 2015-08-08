@@ -23,6 +23,11 @@ val member: a ::: Type -> eq a -> a -> t a -> bool
 val find: a ::: Type -> (a -> bool) -> t a -> option a
 val nth: a ::: Type -> t a -> int -> option a
 
+(* subsequences *)
+
+val take: a ::: Type -> int -> t a -> t a
+val drop: a ::: Type -> int -> t a -> t a
+
 (* map/filter/fold ops *)
 
 val mp: a ::: Type -> b ::: Type -> (a -> b) -> t a -> t b

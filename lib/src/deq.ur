@@ -101,7 +101,23 @@ val eq_deq[a] (_:eq a): eq (t a) = let fun eq' (d1: t a) (d2: t a) = toList d1 =
 val show_deq[a](_:show a): show (t a) = let fun show' (d1: t a) = show (toList d1)
                                           in mkShow show'
                                           end       
-                                
+(* subsequences *)
+
+fun take[a] (n: int) (d1:t a): t a =
+  case d1 of
+   Deq (l, r) =>
+     if n <= L.length l
+       then fromList <| L.take n l
+       else fromList <| L.take n <| toList d1
+
+fun drop[a] (n: int) (d1:t a): t a = 
+  case d1 of
+   Deq (l, r) =>
+     let val len_l = L.length l
+     in if n <= len_l
+       then fromList <| L.drop n <| toList d1
+       else fromList <| L.drop (n - len_l) <| L.rev r
+     end
 
 (* map/filter/fold ops *)
 
@@ -192,7 +208,7 @@ val any[a]: (a -> bool) -> t a -> bool = fn prop (Deq (l, r)) => L.exists prop l
 
 fun propConsViewL[a] (_:eq a) (x: a) (d1: t a): bool = viewL (cons x d1) = Some (x, d1)
 
-fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc x d1) = Some (d1, x)
+fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc d1 x) = Some (d1, x)
 
 fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
 
