@@ -72,7 +72,7 @@ fun nth[a]: t a -> int -> option a = fn (Deq (l, r)) i =>
             then L.nth l i
             else let L.nth r rev_sufix_idx
                  where
-                    val sufix_idx = (i - len_l)
+                    val sufix_idx = i - len_l
                     val rev_sufix_idx = L.length r -1 - sufix_idx
                  end
     end
