@@ -25,7 +25,7 @@ val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 ...
 ```
 
-# test1 task
+### test task
 
 tests lib/test/deq_UnitTest UrUnit assertions
 
