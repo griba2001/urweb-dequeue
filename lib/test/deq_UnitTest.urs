@@ -1,2 +1,2 @@
 
-val unitTest: (list int, int) -> transaction (xbody * list int)
+val unitTest: (list int * int) -> transaction (xbody * list int)

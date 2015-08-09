@@ -1,0 +1,20 @@
+rewrite url Test1/main
+library lib/
+library test/lib_data/
+benignEffectful HSRandom.getSysRandomIntList
+# unused effects functions:
+# benignEffectful HSRandom.sysNextp
+# benignEffectful HSRandom.getRandString
+# benignEffectful HSRandom.getRand_UniqueKey_StringXIntList
+# benignEffectful HSRandom.getRand_UniqueKey_IntXStringList
+
+$/list
+$/string
+$/option
+$/monad
+test/util/HNum
+test/util/HMonad
+test/util/HUrUnit
+test/util/HSRandom
+lib/test/deq_UnitTest
+test/test1

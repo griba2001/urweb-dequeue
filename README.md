@@ -24,3 +24,21 @@ fun fromList[a]: list a -> t a = fn li =>
 val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 ...
 ```
+
+# test1 task
+
+tests lib/test/deq_UnitTest UrUnit assertions
+
+```bash
+export C_INCLUDE_PATH=/path-to-your-urweb-installation/include
+export LIBRARY_PATH=/path-to-your-urweb-installation/lib
+
+cd test/util/c/
+gcc -c Random.c
+cd ../../..
+
+urweb test1
+./test1.exe -p 8082
+browser http://localhost:8082
+```
+Every browser page refresh brings different random input data
