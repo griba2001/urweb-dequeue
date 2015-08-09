@@ -218,9 +218,13 @@ fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc d1 x) = Some 
 
 fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
 
-(* internal rangeList, upto not included *)
-fun rangeList (from: int) (upto: int): list int = (* n >= 0 *)
-   let range' [] upto
+(* internal rangeList
+   @param from
+   @param n number of elements
+   @return list of numbers
+ *)
+fun rangeList (from: int) (n: int): list int = (* n >= 0 *)
+   let range' [] n
    where
      fun range' (acc: list int) (i: int) =
            if i = 0
