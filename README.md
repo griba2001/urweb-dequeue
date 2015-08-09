@@ -17,8 +17,8 @@ fun viewR[a]: t a -> option (t a * a) = ...
 fun fromList[a]: list a -> t a = fn li =>
      case li of
          [] => Deq ([], [])
-         | _ => let val (prefix, sufix) = L.splitAt (L.length li `divide` 2) li
-                in Deq (prefix, L.rev sufix)
+         | _ => let val (prefix, suffix) = L.splitAt (L.length li `divide` 2) li
+                in Deq (prefix, L.rev suffix)
                 end
 
 val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
