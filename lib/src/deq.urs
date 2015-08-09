@@ -13,6 +13,7 @@ val viewR: a ::: Type -> t a -> option (t a * a)
 (* import/export *)
 val fromList: a ::: Type -> list a -> t a
 val toList: a ::: Type -> t a -> list a
+val toRevList: a ::: Type -> t a -> list a
 
 (* monoid ops *)
 val empty: a ::: Type -> t a
@@ -30,6 +31,9 @@ val nth: a ::: Type -> t a -> int -> option a
 val take: a ::: Type -> int -> t a -> t a
 val drop: a ::: Type -> int -> t a -> t a
 val splitAt: a ::: Type -> int -> t a -> t a * t a
+
+val takeR: a ::: Type -> int -> t a -> t a
+val dropR: a ::: Type -> int -> t a -> t a
 
 (* map/filter/fold ops *)
 
@@ -64,3 +68,4 @@ val propSnocViewR: a ::: Type -> eq a -> a -> t a -> bool
 val propFromToList: a ::: Type -> eq a -> list a -> bool
 val propNthSameElements: a ::: Type -> eq a -> t a -> bool
 val propTakeDropSplitAt: a ::: Type -> eq a -> t a -> bool
+val propTakeRDropRSplitAt: a ::: Type -> eq a -> t a -> bool

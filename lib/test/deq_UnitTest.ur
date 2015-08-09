@@ -11,8 +11,9 @@ fun unitTest (testdata: list int, iRnd: int): transaction (xbody * list int) =
         tst2 <- U.assertBool "propFromToList fails" (D.propFromToList testdata) ;
         tst3 <- U.assertBool "propNthSameElements fails" (D.propNthSameElements myDeq) ;
         tst4 <- U.assertBool "propTakeDropSplitAt fails" (D.propTakeDropSplitAt myDeq) ;
+        tst5 <- U.assertBool "propTakeRDropRSplitAt fails" (D.propTakeRDropRSplitAt myDeq) ;
         let
-            val testsResults = tst0 :: tst1 :: tst2 :: tst3 :: tst4 :: []
+            val testsResults = tst0 :: tst1 :: tst2 :: tst3 :: tst4 :: tst5 :: []
             val xmlJoinedResults = List.foldr join <xml/> testsResults
         in
             return (xmlJoinedResults, fromTo)

@@ -17,6 +17,9 @@ fun fromList[a]: list a -> t a = fn li =>
 
 val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 
+val toRevList[a]: t a -> list a = fn (Deq (l, r)) => r `L.append` (L.rev l)
+
+
 (* internal listSplitLast
    @param li 
    @return None | Some (init li, last li)
@@ -106,17 +109,50 @@ val show_deq[a](_:show a): show (t a) = let fun show' (d1: t a) = show (toList d
 fun take[a] (n: int) (d1:t a): t a =
   case d1 of
    Deq (l, r) =>
-     if n <= L.length l
-       then fromList <| L.take n l
-       else fromList <| L.take n <| toList d1
+     let val len_l = L.length l
+     in if n <= L.length l
+       then Deq (L.take n l, []) 
+       else let Deq (l, r')
+            where
+              val r' = L.rev r |> L.take (n - len_l)
+                               |> L.rev 
+            end
+     end
+
+fun takeR[a] (n: int) (d1:t a): t a =
+  case d1 of
+   Deq (l, r) =>
+     let val len_r = L.length r
+     in if n <= len_r
+       then Deq ([], L.take n r)
+       else let Deq (l', r)
+            where
+               val l' = L.rev l |> L.take (n - len_r) |> L.rev 
+            end
+     end
 
 fun drop[a] (n: int) (d1:t a): t a = 
   case d1 of
    Deq (l, r) =>
      let val len_l = L.length l
      in if n <= len_l
-       then fromList <| L.drop n <| toList d1
-       else fromList <| L.drop (n - len_l) <| L.rev r
+       then Deq (L.drop n l, r)
+       else let Deq ([], r')
+            where
+              val r' = L.rev r |> L.drop (n - len_l) |> L.rev
+            end 
+     end
+
+fun dropR[a] (n: int) (d1:t a): t a =
+  case d1 of
+   Deq (l, r) =>
+     let val len_r = L.length r
+     in if n <= len_r
+          then Deq (l, L.drop n r)
+          else let Deq (l', [])
+               where
+                 val l' = L.rev l |> L.drop (n - len_r) |> L.rev
+               end 
      end
 
 fun splitAt[a] (n: int) (d1: t a): t a * t a =
@@ -248,7 +284,23 @@ fun propTakeDropSplitAt[a] (_:eq a) (d1: t a): bool =
             let
                val (fstOfSplit, sndOfSplit) = splitAt n d1
             in
-               take n d1 = fstOfSplit && drop n d1 = sndOfSplit
+               take n d1 = fstOfSplit
+               && drop n d1 = sndOfSplit
+            end
+    end
+
+fun propTakeRDropRSplitAt[a] (_:eq a) (d1: t a): bool =
+    let
+       L.all prop indexes
+    where
+       val len = size d1
+       val indexes = rangeList 0 len
+       fun prop (n: int): bool =
+            let
+               val (fstOfSplit, sndOfSplit) = splitAt (len - n) d1
+            in
+               takeR n d1 = sndOfSplit
+               && dropR n d1 = fstOfSplit
             end
     end
    
