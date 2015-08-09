@@ -1,4 +1,4 @@
-(* splitted list dequeue *)
+(* split list dequeue *)
 
 structure L = List
 structure O = Option  (* import option eq instance *)

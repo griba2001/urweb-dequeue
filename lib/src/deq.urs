@@ -1,3 +1,5 @@
+(* functional Double ended queue *)
+
 con t :: Type -> Type
 
 (* construct *)

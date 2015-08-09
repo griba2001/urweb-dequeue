@@ -1,6 +1,6 @@
 # urweb-dequeue
 
-Splitted list dequeue
+Split list dequeue
 
 ```ocaml
 datatype t a = Deq of (list a * list a)
