@@ -218,9 +218,9 @@ fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc d1 x) = Some 
 
 fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
 
-(* internal rangeList *)
-fun rangeList (from: int) (n: int): list int = (* n >= 0 *)
-   let range' [] n
+(* internal rangeList, upto not included *)
+fun rangeList (from: int) (upto: int): list int = (* n >= 0 *)
+   let range' [] upto
    where
      fun range' (acc: list int) (i: int) =
            if i = 0
@@ -230,9 +230,8 @@ fun rangeList (from: int) (n: int): list int = (* n >= 0 *)
 
 fun propNthSameElements[a] (_:eq a) (d1: t a): bool =
    let 
-      L.mp (nth d1) indexes = L.mp (L.nth li) indexes
+      L.mp (nth d1) indexes = L.mp (L.nth (toList d1)) indexes
    where
-       val li = toList d1
        val indexes = rangeList 0 (size d1)
    end
 
