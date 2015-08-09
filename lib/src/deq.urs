@@ -61,4 +61,4 @@ val propSnocViewR: a ::: Type -> eq a -> a -> t a -> bool
 
 val propFromToList: a ::: Type -> eq a -> list a -> bool
 val propNthSameElements: a ::: Type -> eq a -> t a -> bool
-
+val propTakeDropSplitAt: a ::: Type -> eq a -> t a -> bool

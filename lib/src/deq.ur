@@ -229,10 +229,23 @@ fun rangeList (from: int) (n: int): list int = (* n >= 0 *)
    end
 
 fun propNthSameElements[a] (_:eq a) (d1: t a): bool =
-   let val li = toList d1
-       val idxs = rangeList 0 (size d1)
-       val deqItems = L.mp (nth d1) idxs
-       val listItems = L.mp (L.nth li) idxs 
-   in
-      deqItems = listItems
+   let 
+      L.mp (nth d1) indexes = L.mp (L.nth li) indexes
+   where
+       val li = toList d1
+       val indexes = rangeList 0 (size d1)
    end
+
+fun propTakeDropSplitAt[a] (_:eq a) (d1: t a): bool =
+    let
+       L.all prop indexes
+    where
+       val indexes = rangeList 0 (size d1)
+       fun prop (n: int): bool = 
+            let
+               val (fstOfSplit, sndOfSplit) = splitAt n d1
+            in
+               take n d1 = fstOfSplit && drop n d1 = sndOfSplit
+            end
+    end
+   
