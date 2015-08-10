@@ -30,13 +30,6 @@ val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 tests lib/test/deq_UnitTest UrUnit assertions
 
 ```bash
-export C_INCLUDE_PATH=/path-to-your-urweb-installation/include
-export LIBRARY_PATH=/path-to-your-urweb-installation/lib
-
-cd test/util/c/
-gcc -c Random.c
-cd ../../..
-
 urweb test1
 ./test1.exe -p 8082
 browser http://localhost:8082
