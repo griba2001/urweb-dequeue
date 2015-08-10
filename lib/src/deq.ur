@@ -2,6 +2,8 @@
 
 structure L = List
 structure O = Option  (* import option eq instance *)
+structure LU = ListUtils
+structure PU = PairUtils
 
 datatype t a = Deq of (list a * list a)
 
@@ -19,26 +21,12 @@ val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 
 val toRevList[a]: t a -> list a = fn (Deq (l, r)) => r `L.append` (L.rev l)
 
-
-(* internal listSplitLast
-   @param li 
-   @return None | Some (init li, last li)
- *)
-
-fun listSplitLast[a] (li: list a): option (list a * a) =
-    let splitLast' [] li
-    where
-      fun splitLast' (acc: list a) (li: list a) =
-      case li of
-        | x :: [] => Some (L.rev acc, x)
-        | x :: rest => splitLast' (x :: acc) rest
-        | [] => None
-    end
+val rev[a]: t a -> t a = fn (Deq (l, r)) => Deq (L.rev r, L.rev l)
 
 fun viewL[a]: t a -> option (a * t a) = fn (Deq (l, r)) =>
    case l of
       | x :: xs => Some (x, Deq (xs, r))
-      | [] => (case listSplitLast r of
+      | [] => (case LU.listSplitLast r of
                | None => None
                | Some (ys, y) => Some (y, fromList (L.rev ys))
                )
@@ -46,7 +34,7 @@ fun viewL[a]: t a -> option (a * t a) = fn (Deq (l, r)) =>
 fun viewR[a]: t a -> option (t a * a) = fn (Deq (l, r)) =>
     case r of
       | x :: xs => Some (Deq (l, xs), x)
-      | [] => (case listSplitLast l of
+      | [] => (case LU.listSplitLast l of
                | None => None
                | Some (ys, y) => Some (fromList ys, y)
                )
@@ -161,6 +149,24 @@ fun splitAt[a] (n: int) (d1: t a): t a * t a =
         (fromList prefix, fromList suffix)
     end
 
+fun span[a] (prop: a -> bool) (d1: t a): t a * t a =
+    let val (prefix, suffix) = LU.listSpan prop <| toList d1
+    in (fromList prefix, fromList suffix)
+    end
+
+fun takeWhile[a] (prop: a -> bool): t a -> t a = span prop >>> PU.fst
+fun dropWhile[a] (prop: a -> bool): t a -> t a = span prop >>> PU.snd
+
+fun spanR[a] (prop: a -> bool) (d1: t a): t a * t a =
+    let val (prefix, suffix) = LU.listSpan prop <| toRevList d1
+    in (fromList (L.rev prefix), fromList (L.rev suffix))
+    end
+
+fun takeWhileR[a] (prop: a -> bool): t a -> t a = spanR prop >>> PU.fst
+fun dropWhileR[a] (prop: a -> bool): t a -> t a = spanR prop >>> PU.snd
+
+
+
 (* map/filter/fold ops *)
 
 val mp[a][b]: (a -> b) -> t a -> t b = fn f (Deq (l, r)) =>
@@ -254,32 +260,19 @@ fun propSnocViewR[a] (_:eq a) (x: a) (d1: t a): bool = viewR (snoc d1 x) = Some 
 
 fun propFromToList[a] (_:eq a) (li: list a): bool = li = toList ( fromList li)
 
-(* internal rangeList
-   @param from
-   @param n number of elements
-   @return list of numbers
- *)
-fun rangeList (from: int) (n: int): list int = (* n >= 0 *)
-   let range' [] n
-   where
-     fun range' (acc: list int) (i: int) =
-           if i = 0
-             then acc
-             else range' ((from + i - 1) :: acc) (i - 1)
-   end
 
 fun propNthSameElements[a] (_:eq a) (d1: t a): bool =
    let 
       L.mp (nth d1) indexes = L.mp (L.nth (toList d1)) indexes
    where
-       val indexes = rangeList 0 (size d1)
+       val indexes = LU.rangeList 0 (size d1)
    end
 
 fun propTakeDropSplitAt[a] (_:eq a) (d1: t a): bool =
     let
        L.all prop indexes
     where
-       val indexes = rangeList 0 (size d1)
+       val indexes = LU.rangeList 0 (size d1)
        fun prop (n: int): bool = 
             let
                val (fstOfSplit, sndOfSplit) = splitAt n d1
@@ -294,7 +287,7 @@ fun propTakeRDropRSplitAt[a] (_:eq a) (d1: t a): bool =
        L.all prop indexes
     where
        val len = size d1
-       val indexes = rangeList 0 len
+       val indexes = LU.rangeList 0 len
        fun prop (n: int): bool =
             let
                val (fstOfSplit, sndOfSplit) = splitAt (len - n) d1

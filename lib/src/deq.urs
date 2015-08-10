@@ -14,6 +14,7 @@ val viewR: a ::: Type -> t a -> option (t a * a)
 val fromList: a ::: Type -> list a -> t a
 val toList: a ::: Type -> t a -> list a
 val toRevList: a ::: Type -> t a -> list a
+val rev: a ::: Type -> t a -> t a
 
 (* monoid ops *)
 val empty: a ::: Type -> t a
@@ -34,6 +35,14 @@ val splitAt: a ::: Type -> int -> t a -> t a * t a
 
 val takeR: a ::: Type -> int -> t a -> t a
 val dropR: a ::: Type -> int -> t a -> t a
+
+val span: a ::: Type -> (a -> bool) -> t a -> t a * t a
+val takeWhile: a ::: Type -> (a -> bool) -> t a -> t a
+val dropWhile: a ::: Type -> (a -> bool) -> t a -> t a
+
+val spanR: a ::: Type -> (a -> bool) -> t a -> t a * t a
+val takeWhileR: a ::: Type -> (a -> bool) -> t a -> t a
+val dropWhileR: a ::: Type -> (a -> bool) -> t a -> t a
 
 (* map/filter/fold ops *)
 
