@@ -21,8 +21,6 @@ val toList[a]: t a -> list a = fn (Deq (l, r)) => l `L.append` (L.rev r)
 
 val toRevList[a]: t a -> list a = fn (Deq (l, r)) => r `L.append` (L.rev l)
 
-val rev[a]: t a -> t a = fn (Deq (l, r)) => Deq (L.rev r, L.rev l)
-
 fun viewL[a]: t a -> option (a * t a) = fn (Deq (l, r)) =>
    case l of
       | x :: xs => Some (x, Deq (xs, r))
@@ -166,8 +164,9 @@ fun takeWhileR[a] (prop: a -> bool): t a -> t a = spanR prop >>> PU.fst
 fun dropWhileR[a] (prop: a -> bool): t a -> t a = spanR prop >>> PU.snd
 
 
+(* transform *)
 
-(* map/filter/fold ops *)
+val rev[a]: t a -> t a = fn (Deq (l, r)) => Deq (L.rev r, L.rev l)
 
 val mp[a][b]: (a -> b) -> t a -> t b = fn f (Deq (l, r)) =>
 
@@ -177,9 +176,21 @@ val mapPartial[a][b]: (a -> option b) -> t a -> t b = fn f (Deq (l, r)) =>
 
      Deq (L.mapPartial f l, L.mapPartial f r)
 
+(* filter *)
+
 val filter[a]: (a -> bool) -> t a -> t a = fn prop (Deq (l, r)) =>
 
      Deq (L.filter prop l, L.filter prop r)
+
+val partition[a]: (a -> bool) -> t a -> t a * t a = fn prop (Deq (l, r)) =>
+     let
+         val (l_pos, l_neg) = LU.listPartition prop l
+         val (r_pos, r_neg) = LU.listPartition prop r
+     in
+         (Deq (l_pos, r_pos), Deq (l_neg, r_neg))
+     end
+
+(* foldings *)
 
 val foldl[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
      let

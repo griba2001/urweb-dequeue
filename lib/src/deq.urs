@@ -14,7 +14,6 @@ val viewR: a ::: Type -> t a -> option (t a * a)
 val fromList: a ::: Type -> list a -> t a
 val toList: a ::: Type -> t a -> list a
 val toRevList: a ::: Type -> t a -> list a
-val rev: a ::: Type -> t a -> t a
 
 (* monoid ops *)
 val empty: a ::: Type -> t a
@@ -44,12 +43,19 @@ val spanR: a ::: Type -> (a -> bool) -> t a -> t a * t a
 val takeWhileR: a ::: Type -> (a -> bool) -> t a -> t a
 val dropWhileR: a ::: Type -> (a -> bool) -> t a -> t a
 
-(* map/filter/fold ops *)
+(* transform *)
+
+val rev: a ::: Type -> t a -> t a
 
 val mp: a ::: Type -> b ::: Type -> (a -> b) -> t a -> t b
 val mapPartial: a ::: Type -> b ::: Type -> (a -> option b) -> t a -> t b
 
+(* filter *)
+
 val filter: a ::: Type -> (a -> bool) -> t a -> t a
+val partition: a ::: Type -> (a -> bool) -> t a -> t a * t a
+
+(* foldings *)
 
 val foldl: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> t a -> b
 val foldr: a ::: Type -> b ::: Type -> (a -> b -> b) -> b -> t a -> b

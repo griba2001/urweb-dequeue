@@ -43,3 +43,13 @@ fun listSpan[a] (prop: a -> bool) (li: list a): list a * list a =
            | [] => (L.rev acc, li')
    end
 
+fun listPartition[a] (prop: a -> bool) (li: list a): list a * list a =
+     let part' [] [] li
+     where
+       fun part' (pos_acc: list a) (neg_acc: list a) (li': list a) =
+          case li' of
+            | x :: xs => if prop x
+                            then part' (x :: pos_acc) neg_acc xs
+                            else part' pos_acc (x :: neg_acc) xs
+            | [] => (L.rev pos_acc, L.rev neg_acc)
+     end
