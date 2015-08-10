@@ -4,6 +4,7 @@ structure L = List
 structure O = Option  (* import option eq instance *)
 structure LU = ListUtils
 structure PU = PairUtils
+structure FU = FunUtils
 
 datatype t a = Deq of (list a * list a)
 
@@ -193,18 +194,13 @@ val partition[a]: (a -> bool) -> t a -> t a * t a = fn prop (Deq (l, r)) =>
 (* foldings *)
 
 val foldl[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
-     let
-        val acc = L.foldl binop z l
-     in
-        L.foldl binop acc (L.rev r)
-     end
+
+    z |> (FU.flip (L.foldl binop) l >>> FU.flip (L.foldr binop) r)
 
 val foldr[a][b]: (a -> b -> b) -> b -> t a -> b = fn binop z (Deq (l, r)) =>
-     let
-        val acc = L.foldl binop z r
-     in
-        L.foldr binop acc l 
-     end
+
+    z |> (FU.flip (L.foldl binop) r >>> FU.flip (L.foldr binop) l)
+
 
 (* fun withPartialBinop:
    converts partial foldings' function (a -> b -> option b) to (a -> b -> b) *)

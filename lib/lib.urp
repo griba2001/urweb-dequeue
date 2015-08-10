@@ -2,4 +2,5 @@ $/list
 $/option
 src/util/listUtils
 src/util/pairUtils
+src/util/funUtils
 src/deq
